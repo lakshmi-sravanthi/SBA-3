@@ -1,0 +1,136 @@
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.Select;
+
+public class selenium {
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\satee\\Downloads\\chromedriver.exe");
+	     WebDriver driver=new ChromeDriver();
+	     driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+	     driver.get("http://the-internet.herokuapp.com/");
+	     //for hover
+	     driver.findElement(By.xpath("//*[@id=\"content\"]/ul/li[25]/a")).click();
+	     Actions actions = new Actions(driver);
+			WebElement firstImage = driver.findElement(By.xpath("//*[@id=\"content\"]/div/div[1]/img"));
+			actions.moveToElement(firstImage).click().perform();
+			String firstImageText =  driver.findElement(By.xpath("//*[@id=\"content\"]/div/div[1]/div/h5")).getText();
+			System.out.println(firstImageText.substring(6));
+			
+			driver.navigate().back();
+			
+			//keypress
+			
+	     //Checkboxes
+	     driver.findElement(By.cssSelector("a[href='/checkboxes']")).click();
+	     int checkboxsize=driver.findElements(By.cssSelector("input[type='checkbox']")).size();
+	     for(int i=0;i<checkboxsize;i++) {
+	    	 boolean x=driver.findElements(By.cssSelector("input[type='checkbox']")).get(i).isSelected();
+	    	 if(x==true) {
+		    	 driver.findElement(By.cssSelector("input[type='checkbox']")).click();
+		     }
+	    	 Thread.sleep(2000);
+	     }
+	     
+	     driver.navigate().back();
+	    
+	     //inputs
+	     
+	     driver.findElement(By.cssSelector("a[href='/inputs']")).click();
+	     driver.findElement(By.cssSelector("input[type='number']")).sendKeys("1235");
+	     driver.navigate().back();
+	     
+	     //dropdown
+	     
+	     driver.findElement(By.cssSelector("a[href='/dropdown']")).click();
+	     Select s=new Select(driver.findElement(By.cssSelector("select[id='dropdown']")));
+	     s.selectByValue("2");
+	     
+	     driver.navigate().back();
+	     
+	     //uploadFile
+	     
+	     driver.findElement(By.cssSelector("a[href='/upload']")).click();
+	     driver.findElement(By.id("file-upload")).sendKeys("C:\\Users\\satee\\Downloads\\dummy.txt");
+	     driver.findElement(By.id("file-submit")).click();
+	     driver.navigate().back();
+	     driver.navigate().back();
+	     
+	     //tables
+	     
+	     driver.findElement(By.xpath("//*[@id=\"content\"]/ul/li[41]/a")).click();
+			int i = 1;
+			String nameXpath = "//*[@id=\"table1\"]/tbody/tr[" + i + "]/td[2]";
+			
+			while(driver.findElements(By.xpath(nameXpath)).size() > 0) {
+				String name = driver.findElement(By.xpath(nameXpath)).getText();
+				if(name.equalsIgnoreCase("Tim")) {
+					String emailXpath = "//*[@id=\"table1\"]/tbody/tr[" + i + "]/td[3]";
+					String webSiteXpath = "//*[@id=\"table1\"]/tbody/tr[" + i + "]/td[5]";
+					String email = driver.findElement(By.xpath(emailXpath)).getText();
+					String webSite = driver.findElement(By.xpath(webSiteXpath)).getText();
+					System.out.println("Email: "+ email + ", Website: " + webSite);
+					break;
+				}
+				i++;
+				nameXpath = "//*[@id=\"table1\"]/tbody/tr[" + i + "]/td[2]";
+			}
+			
+			driver.navigate().back();
+			
+			//keypress
+			
+			driver.findElement(By.xpath("//*[@id=\"content\"]/ul/li[31]/a")).click();
+
+			WebElement element = driver.findElement(By.xpath("//*[@id=\"result\"]"));
+			
+			driver.findElement(By.xpath("//*[@id=\"target\"]")).click();
+			driver.findElement(By.xpath("//*[@id=\"target\"]")).sendKeys(Keys.BACK_SPACE);
+
+			String keyPressed = element.getText();
+			System.out.println(keyPressed);
+			
+			driver.navigate().back();
+			
+			
+	     //alert
+	     
+	     driver.findElement(By.cssSelector("a[href='/context_menu']")).click();
+	     Actions actions2 = new Actions(driver);
+	     WebElement elementLocator = driver.findElement(By.id("hot-spot"));
+	     actions.contextClick(elementLocator).perform();
+	     driver.switchTo().alert().accept();
+	     driver.navigate().back();
+	     
+	     //Multiple windows
+	     
+	     driver.findElement(By.cssSelector("a[href='/windows']")).click();
+	     String key=Keys.chord(Keys.CONTROL,Keys.ENTER);
+	     driver.findElement(By.cssSelector("a[href='/windows/new']")).sendKeys(key);
+	     Set<String>s1=driver.getWindowHandles();
+         Iterator<String> I1= s1.iterator();
+         while(I1.hasNext())
+         {
+         
+        driver.switchTo().window(I1.next());
+        String title=driver.getTitle();
+        System.out.println(title);
+        if(title.contains("New Window")) {
+	     driver.quit();
+        }
+        
+         }
+        
+	}	     
+	
+}
